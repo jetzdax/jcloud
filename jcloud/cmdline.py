@@ -3,13 +3,13 @@ import sys
 import logging
 from argparse import RawTextHelpFormatter
 from jcloud.core import JCloudCore
-from jcloud.errors import ParamError, UsageError
+from jcloud.errors import ParamError, UsageError, TemplateError, ClientError, CloudError
 
 logger = logging.getLogger(__package__)
 
 
 def main():
-    """ Entrypoint to zcloud CLI as defined in setup.py """
+    """ Entrypoint to jcloud CLI as defined in setup.py """
     parser = argparse.ArgumentParser(formatter_class=RawTextHelpFormatter,
                                      description="Combines the power of jinja2 and cloudformation templates")
     parser.add_argument("-i", "--input", help="The input jinja2 file.", required=True)
@@ -45,18 +45,15 @@ def main():
     except ParamError as e:
         logger.error(e)
         sys.exit(1)
-    # except FormatError as e:
-    #     logger.error(e)
-    #     sys.exit(1)
-    # except NagError as e:
-    #     logger.error(e)
-    #     sys.exit(1)
-    # except CloudError as e:
-    #     logger.error(e)
-    #     sys.exit(2)
-    # except ClientError as e:
-    #     logger.error(e)
-    #     sys.exit(2)
+    except TemplateError as e:
+        logger.error(e)
+        sys.exit(1)
+    except ClientError as e:
+        logger.error(e)
+        sys.exit(2)
+    except CloudError as e:
+        logger.error(e)
+        sys.exit(2)
     # except BotoCoreError as e:
     #     logger.error(e)
     #     sys.exit(2)
